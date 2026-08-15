@@ -1,25 +1,39 @@
-# FxPool — Prototype
+# Pack the Pool
 
-Interactive demo of the pooled-forward-contract mechanism from the FxPool research proposal
-(GIFT IFIH FinTech Ideation Hackathon 2026).
+A playable, pixel-art, Tetris-style demo of FxPool's core mechanism: small
+invoices are individually too small for a bank to hedge, but pooled together
+they clear easily. This turns that trade-off into a game.
 
-## Try it
-1. Enter an invoice amount + days to settlement
-2. Click "Lock this rate & join the pool" — watch it join two seeded exporters
-3. Click "Simulate settlement" — see proportional INR payout per exporter
+## How it works
 
-## What's real vs. simulated
-- **Real:** forward-rate calc (interest rate differential formula), pool aggregation logic,
-  proportional settlement math
-- **Simulated:** market rates (fixed sample values, not live), exporter pool (seeded, not a
-  live order book), OCR invoice intake (not built)
-- **Not touched:** no backend, no fund custody — matches FxPool's actual role as a matching/
-  instruction layer, not a money mover
+- Invoices fall from the top into one of 6 slots, in three size tiers, flat
+  pixel colors, no gradients:
+  - **Small** (teal, $400–1,800) — quick to place, barely moves the pool total
+  - **Medium** (gold, $1,800–4,500) — bigger step toward threshold, more bin space
+  - **Large** (coral, $4,500–8,500) — closes the gap fast, but a single misplaced
+    one can overflow a column
+- Below the falling bin sits an actual **pool** — a pixel-wave water tank that
+  rises as dollars accumulate. It shows live $ pooled / threshold and % filled.
+- Hit the threshold → **"BATCH EXECUTED"**: the pool splashes, drains, lifetime
+  hedged total goes up, and the next round has a higher threshold and faster
+  fall speed.
+- If a column fills up before the threshold is hit → game over ("pool overflowed").
+- Lifetime-hedged best run persists locally via `localStorage`.
+
+## Visual style
+
+Press Start 2P + VT323 pixel fonts, flat solid tier colors (no CSS gradients
+anywhere), thick black pixel borders, and chunky 3D "press-down" buttons —
+built to feel like a Scratch/8-bit arcade toy rather than a polished SaaS UI.
+
+## Controls
+
+- **◀ / ▶** or Arrow Left/Right — move the falling invoice
+- **DROP** button, `Space`, or `↓` — drop into the current column
+- Fully playable with on-screen buttons (touch/click) or keyboard
 
 ## Stack
-Single static `index.html` — zero build step. Deployed to Vercel as a static site.
 
-## Next steps (if taken past prototype)
-- Live rate feed from an IFSC banking unit partner
-- Real invoice OCR
-- Persistent pool/order-book backend
+Single static `index.html` — no build step, no dependencies beyond a Google
+Fonts CDN link. All game logic is vanilla JS (`requestAnimationFrame` loop,
+no libraries).
